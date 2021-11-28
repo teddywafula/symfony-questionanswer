@@ -24,7 +24,19 @@ class Category
      */
     private $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Question::class, mappedBy="category")
+     */
+    private $questions;
 
+    public function __construct()
+    {
+        $this->questions = new ArrayCollection();
+    }
+
+    public function __toString() {
+        return $this->name;
+    }
 
     public function getId(): ?int
     {
@@ -39,6 +51,36 @@ class Category
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Question[]
+     */
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
+    public function addQuestion(Question $question): self
+    {
+        if (!$this->questions->contains($question)) {
+            $this->questions[] = $question;
+            $question->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(Question $question): self
+    {
+        if ($this->questions->removeElement($question)) {
+            // set the owning side to null (unless already changed)
+            if ($question->getCategory() === $this) {
+                $question->setCategory(null);
+            }
+        }
 
         return $this;
     }

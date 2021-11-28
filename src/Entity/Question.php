@@ -29,6 +29,11 @@ class Question
      */
     private $answers;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="questions")
+     */
+    private $category;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
@@ -81,6 +86,18 @@ class Question
                 $answer->setQuestion(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
