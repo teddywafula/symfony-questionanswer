@@ -13,6 +13,7 @@ class AnswerType extends AbstractType
     {
         $builder
             ->add('answer')
+            ->add('question')
         ;
     }
 

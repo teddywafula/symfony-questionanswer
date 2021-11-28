@@ -24,7 +24,19 @@ class Question
      */
     private $title;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="question")
+     */
+    private $answers;
 
+    public function __construct()
+    {
+        $this->answers = new ArrayCollection();
+    }
+
+    public function __toString() {
+        return $this->title;
+    }
 
     public function getId(): ?int
     {
@@ -39,6 +51,36 @@ class Question
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Answer[]
+     */
+    public function getAnswers(): Collection
+    {
+        return $this->answers;
+    }
+
+    public function addAnswer(Answer $answer): self
+    {
+        if (!$this->answers->contains($answer)) {
+            $this->answers[] = $answer;
+            $answer->setQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnswer(Answer $answer): self
+    {
+        if ($this->answers->removeElement($answer)) {
+            // set the owning side to null (unless already changed)
+            if ($answer->getQuestion() === $this) {
+                $answer->setQuestion(null);
+            }
+        }
 
         return $this;
     }
